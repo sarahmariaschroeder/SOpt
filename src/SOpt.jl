@@ -1,0 +1,20 @@
+module SOpt
+
+    # Carrega as dependencias
+    using LFrame
+    using LinearAlgebra
+    using Test
+    using OrderedCollections
+    using Lgmsh
+    using YAML
+
+    # Carrega os modulos
+    include("main.jl")
+    include("lass.jl")
+    include("auxiliar.jl")
+    include("tensao.jl")
+    include("runtest.jl")
+
+
+
+end 
