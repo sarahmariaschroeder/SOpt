@@ -1,0 +1,44 @@
+# Viga engastada, força em -z de 1500N e torque positivo de 1000Nm no meio da viga,
+# força positiva em x de 1000N e força negativa em y de 2000N na ponta livre. o eixo da viga acompanha x
+
+materiais:
+  - nome: "aco"
+    G: 8.0e10
+    Ex: 2.1e11
+    S_esc: 350e6
+    
+loads: 2 3 -1500 
+       2 4 1000
+       3 1 1500
+       3 2 -2000
+
+geometrias:
+  - Iz: 7.8539816e-5
+    A: 0.0314159265
+    Iy: 7.8539816e-5
+    nome: "tubo1"
+    α: 0
+    J0: 1.57079633e-4
+
+coordenadas:
+  0.0 0.0 0.0
+  1.0 0.0 0.0
+  2.0 0.0 0.0
+
+conectividades: 
+  1 2
+  2 3
+
+
+apoios: 
+  1 1 0.0
+  1 2 0.0
+  1 3 0.0
+  1 4 0.0
+  1 5 0.0
+  1 6 0.0
+
+
+dados_elementos:
+  aco tubo1
+  aco tubo1
