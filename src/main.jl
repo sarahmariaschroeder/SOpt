@@ -2,16 +2,6 @@
 #                                      MAIN/DRIVER DO PROGRAMA PRINCIPAL                                           #
 ####################################################################################################################
 
-using LinearAlgebra
-using LFrame
-using LASS
-using Distributions
-using DelimitedFiles
-using Plots
-
-include("tensao.jl")
-
-
 
 #
 #
