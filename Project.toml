@@ -1,0 +1,8 @@
+[deps]
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+LFrame = "ff7349aa-6be6-4087-9dfe-a9fea3953284"
+Lgmsh = "901517f6-ef86-4a80-bf35-2c5b8e720204"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+[compat]
+julia = ">= 1.11"
