@@ -10,7 +10,7 @@ module SOpt
 
     # Carrega os modulos
     include("main.jl")
-    include("lass.jl")
+    include("LASS/lass.jl")
     include("auxiliar.jl")
     include("tensao.jl")
     include("runtest.jl")
