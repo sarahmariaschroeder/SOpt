@@ -85,7 +85,10 @@ function Tensao_elemento_no_ponto(ele,no,pto,malha,U; verbose=false)
 
     # O momento resultante é 
     Mr = sqrt(My^2 + Mz^2)
-    println("Momento Resultante (Mr): $Mr")
+
+    if verbose
+        println("Momento Resultante (Mr): $Mr")
+    end
 
     # Podemos calcular as componentes de tensão diretamente:
 

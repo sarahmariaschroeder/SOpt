@@ -10,7 +10,7 @@ using DelimitedFiles
 using Plots
 
 include("tensao.jl")
-include("LASS/lass.jl")
+
 
 
 #
@@ -23,20 +23,10 @@ include("LASS/lass.jl")
 
 
 # Função principal por enquanto pra rodarmos os Testes
-function main()
-    #
-    # Conecta com o LFrame
-    #
-
-    # Inclui as rotinas secundárias
-    
-    #include("src/auxiliar.jl")
-    #include("src/derivadas.jl")
-
-
+function main(arquivo)
 
     # Define o arquivo
-    arquivo = "examples/validacao.yaml"
+    #arquivo = "examples/validacao.yaml"
 
     malha = LFrame.Le_YAML(arquivo)
 

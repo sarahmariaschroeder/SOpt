@@ -13,7 +13,7 @@ module SOpt
     include("LASS/lass.jl")
     include("auxiliar.jl")
     include("tensao.jl")
-    include("runtest.jl")
+    #include("runtest.jl")
 
 
 
