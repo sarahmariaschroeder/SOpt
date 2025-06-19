@@ -8,6 +8,7 @@ module SOpt
     using OrderedCollections
     using Lgmsh
     using YAML
+    using DelimitedFiles
 
 
     # Carrega os modulos
