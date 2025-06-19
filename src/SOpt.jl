@@ -9,6 +9,7 @@ module SOpt
     using Lgmsh
     using YAML
     using DelimitedFiles
+    using LASS
 
 
     # Carrega os modulos
