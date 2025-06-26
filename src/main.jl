@@ -22,6 +22,36 @@ function main(arquivo)
 
     roda_lass(malha)
 
+
+    # Plotagem dos resultados
+    # Número de forças 
+    nload = size(malha.loads,1)
+
+    # FORÇAS
+    xf = readdlm("realiza.txt")
+    for i = 1:nload
+        if i == 1
+            histogram(xf[i,:])
+        else
+            histogram!(xf[i,:])
+        end
+    end
+
+    # TENSÕES 
+    # Numero de elementos
+    nele = malha.ne
+    # Ve o que acontece com as tensoes
+    tensoes = distribui_tensoes(malha, realizacoes, U)
+    for i = 1:nele
+        if i == 1
+            histogram(tensoes[i,:])
+        else
+            histogram!(tensoes[i,:])
+        end
+    end
+
+
+
     # Soluciona o problema utilizando o LFrame
     #U, malha = Analise3D(arquivo)# ; ρ0) # deixando o rho pra depois
 

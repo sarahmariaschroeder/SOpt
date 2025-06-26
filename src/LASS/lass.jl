@@ -66,9 +66,9 @@ end
 
 
 #
-# Gera todas as realizações para usar no LASS
+# Gera todas as realizações de forças para usar no LASS
 #
-function gera_distribuicoes(malha, n_r=100, σ2=0.4)
+function gera_distribuicoesforcas(malha, n_r=100, σ2=0.4)
 
     # Número de forças 
     nload = size(malha.loads,1)
@@ -89,14 +89,55 @@ function gera_distribuicoes(malha, n_r=100, σ2=0.4)
 
 end
 
+
+# Função que ve o efeito das incertezas nas forças nas tensões
+function distribui_tensoes(malha, realizacoes, U)
+
+    # numero de elementos
+    nele = length(malha.ele)
+
+    # Número de realizações
+    nr = size(realizacoes, 2)
+
+    # Gera um vetor que guarda essas informações
+    tensoes = zeros(n_elem, n_r) 
+
+    # Pega os pares (nó, gdl) da malha — onde aplicar cada força
+    locais = [(no, gdl) for (no, gdl, _) in malha.loads]
+
+    # Loop por cada realização de forças (cada vetor x)
+    for j in 1:n_r
+
+        # Aplica a realização j das forças
+        for i in 1:axes(locais)
+            no, gdl = locais[i]
+            valor_forca = realizacoes[i, j]
+            push!(malha.loads, (no, gdl, valor_forca))
+        end
+        
+        # Calcula a resposta da estrutura
+        U = Analise3D(malha)
+
+        # Calcula as tensões equivalentes pra essa realização
+        σ_eq = tensao_equivalente(U, malha)
+
+        # Salva o resultado da tensão dessa realização na matriz
+        tensoes[:, j] .= σ_eq
+    end
+
+    # Retorna a matriz com todas as tensões por elemento e realização
+    return tensoes
+end
+
+
 # --- LASS EM AÇÃO :))))
 function roda_lass(malha,n_r=100_000)
 
     # Define distribuições das forças 
-    dists = gera_distribuicoes(malha,n_r)
+    dists = gera_distribuicoesforcas(malha,n_r)
 
     # Grava as realizações 
-    writedlm("realiza.txt",dists)
+    writedlm("realizaforcas.txt",dists)
 
     # Número de amostras por variável (força)
     n_amostras = 5
@@ -117,4 +158,6 @@ function roda_lass(malha,n_r=100_000)
 
     return E, Var
 end
+
+
 

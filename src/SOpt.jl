@@ -10,6 +10,7 @@ module SOpt
     using YAML
     using DelimitedFiles
     using LASS
+    using Plots
 
 
     # Carrega os modulos
