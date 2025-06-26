@@ -40,6 +40,7 @@ function main(arquivo)
     # TENSÕES 
     # Numero de elementos
     nele = malha.ne
+    realizacoes = gera_distribuicoesforcas(malha,n_r)
     # Ve o que acontece com as tensoes
     tensoes = distribui_tensoes(malha, realizacoes, U)
     for i = 1:nele
