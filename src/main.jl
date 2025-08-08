@@ -29,6 +29,12 @@ function main(arquivo)
 
     # FORÇAS
     xf = readdlm("realiza.txt")
+
+    # p = plot()
+    # for i = 1:nload
+    #       histogram!(p,xf[i,:])
+    # end
+
     for i = 1:nload
         if i == 1
             histogram(xf[i,:])
@@ -36,6 +42,8 @@ function main(arquivo)
             histogram!(xf[i,:])
         end
     end
+
+    # savefig("histograma_forca.pdf")
 
     # TENSÕES 
     # Numero de elementos
