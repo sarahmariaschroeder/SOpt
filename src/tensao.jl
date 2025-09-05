@@ -1,7 +1,6 @@
 #
 # Ligando o LFRAME com a otimzização
 #
-using LFrame
 
 function tensao_equivalente(U, malha)
 
@@ -17,7 +16,7 @@ function tensao_equivalente(U, malha)
     for ele=1:ne
        for no=1:2
            for pto=0:1
-               σe,_ =  Tensao_elemento_no_ponto(ele,no,pto,malha,U)    
+               σe =  Tensao_elemento_no_ponto(ele,no,pto,malha,U)    
                σ_eq[cont] = σe
                cont += 1
             end
@@ -40,7 +39,6 @@ function Tensao_elemento_no_ponto(ele,no,pto,malha,U; verbose=false)
 
     # Obtem o vetor de forças nos nós do elemento 
     geo,Fe = Forcas_elemento(ele,malha,U)
-
 
     if verbose
         println("Debug no ELEMENTO $ele, NÓ $no, PONTO $pto")
@@ -116,7 +114,7 @@ function Tensao_elemento_no_ponto(ele,no,pto,malha,U; verbose=false)
 
     # Retorna o vetor com as tensões do ponto e 
     # também a tensão equivalente e os esforços internos
-    return σe, Esforcos_internos, [σ_N;τ;σ_M]
+    return σe #, Esforcos_internos, [σ_N;τ;σ_M]
 
 end
 

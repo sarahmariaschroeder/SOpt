@@ -22,47 +22,7 @@ function extrai_loads(malha)
 
 end
 
-# Função para aplicar esse carregamento desse vetor
-#
-# x é um vetor com as variáveis aleatórias ( magnitude
-# das forças )
-#
-function aplica_loads!(malha, x::Vector)
 
-    # Pega os loads que foram extraídos
-    # locais = extrai_loads(malha)
-
-    # Teste dimensao
-    if size(malha.loads,1) != length(x)
-        error("Dimensao de malha.loads tem que ser o mesmo de x")
-    end
-
-    # Aplica os carregamentos com os valores do vetor x
-    for i in 1:length(x)
-        malha.loads[i,3] = x[i]
-    end
-
-end
-
-# Função que devolve a norma p
-function Realiza_norma(x::Vector,  malha, P=8.0)
-
-    # Aplica as forças
-    aplica_loads!(malha, x)
-
-    # Calcula a resposta da estrutura
-    U,_ = Analise3D(malha,false)
-
-    # Calcula tensoes equivalentes
-    σ = tensao_equivalente(U, malha)
-
-    # Calcula norma P
-    norma = norm(σ,P) # sum((σ^P))^(1/P)
-
-    # Devolve
-    return norma
-
-end
 
 
 #

@@ -11,13 +11,17 @@
 #
 #
 
-
+#
+#
+#
 # Função principal por enquanto pra rodarmos os Testes
+#
+# arquivo <- yaml com os dados da malha
+# n_r     <- número de realizações
+#
 function main(arquivo,n_r=100_000)
 
     # Define o arquivo
-    #arquivo = "examples/validacao.yaml"
-
     malha = LFrame.Le_YAML(arquivo)
 
     roda_lass(malha,n_r)
@@ -49,7 +53,6 @@ function main(arquivo,n_r=100_000)
     # Numero de elementos
     nele = malha.ne
     realizacoes = gera_distribuicoesforcas(malha,n_r)
-
 
     # Ve o que acontece com as tensoes
     tensoes = distribui_tensoes(malha, realizacoes)
