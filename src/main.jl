@@ -13,14 +13,14 @@
 
 
 # Função principal por enquanto pra rodarmos os Testes
-function main(arquivo)
+function main(arquivo,n_r=100_000)
 
     # Define o arquivo
     #arquivo = "examples/validacao.yaml"
 
     malha = LFrame.Le_YAML(arquivo)
 
-    roda_lass(malha)
+    roda_lass(malha,n_r)
 
 
     # Plotagem dos resultados
@@ -49,13 +49,16 @@ function main(arquivo)
     # Numero de elementos
     nele = malha.ne
     realizacoes = gera_distribuicoesforcas(malha,n_r)
+
+
     # Ve o que acontece com as tensoes
-    tensoes = distribui_tensoes(malha, realizacoes, U)
+    tensoes = distribui_tensoes(malha, realizacoes)
+
     for i = 1:nele
         if i == 1
-            histogram(tensoes[i,:])
+            display(histogram(tensoes[i,:]))
         else
-            histogram!(tensoes[i,:])
+            display(histogram!(tensoes[i,:]))
         end
     end
 

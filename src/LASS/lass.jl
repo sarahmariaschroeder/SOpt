@@ -51,7 +51,7 @@ function Realiza_norma(x::Vector,  malha, P=8.0)
     aplica_loads!(malha, x)
 
     # Calcula a resposta da estrutura
-    U,_ = Analise3D(malha)
+    U,_ = Analise3D(malha,false)
 
     # Calcula tensoes equivalentes
     σ = tensao_equivalente(U, malha)
@@ -91,32 +91,36 @@ end
 
 
 # Função que ve o efeito das incertezas nas forças nas tensões
-function distribui_tensoes(malha, realizacoes, U)
+function distribui_tensoes(malha, realizacoes)
 
     # numero de elementos
-    nele = length(malha.ele)
+    nele = malha.ne
 
     # Número de realizações
-    nr = size(realizacoes, 2)
+    n_r = size(realizacoes, 2)
 
     # Gera um vetor que guarda essas informações
-    tensoes = zeros(n_elem, n_r) 
+    #
+    # Eu entendo que aqui são as tensões equivalentes (escalar)
+    #
+    tensoes = zeros(4*nele, n_r) 
 
     # Pega os pares (nó, gdl) da malha — onde aplicar cada força
-    locais = [(no, gdl) for (no, gdl, _) in malha.loads]
+    # locais = [(linha[1], linha[2]) for linha in eachrow(malha.loads)]
+
+    #@show locais 
 
     # Loop por cada realização de forças (cada vetor x)
     for j in 1:n_r
 
         # Aplica a realização j das forças
-        for i in 1:axes(locais)
-            no, gdl = locais[i]
+        for i in size(malha.loads,1) 
             valor_forca = realizacoes[i, j]
-            push!(malha.loads, (no, gdl, valor_forca))
+            malha.loads[i,3] = valor_forca
         end
         
         # Calcula a resposta da estrutura
-        U = Analise3D(malha)
+        U,_ = Analise3D(malha,false)
 
         # Calcula as tensões equivalentes pra essa realização
         σ_eq = tensao_equivalente(U, malha)
@@ -131,7 +135,7 @@ end
 
 
 # --- LASS EM AÇÃO :))))
-function roda_lass(malha,n_r=100_000)
+function roda_lass(malha,n_r)
 
     # Define distribuições das forças 
     dists = gera_distribuicoesforcas(malha,n_r)
@@ -148,7 +152,7 @@ function roda_lass(malha,n_r=100_000)
     # Gera bins
     bins = Generate_bins(dists, Nb)
 
-    @show bins
+    #@show bins
 
     # Roda LASS
     E, Var = Lass(bins, x -> Realiza_norma(x, malha))  

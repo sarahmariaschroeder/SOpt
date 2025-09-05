@@ -20,6 +20,7 @@ module SOpt
     include("tensao.jl")
     #include("runtest.jl")
 
+    export main
 
 
 end 

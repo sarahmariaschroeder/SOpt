@@ -5,16 +5,19 @@ using LFrame
 
 function tensao_equivalente(U, malha)
 
+    # Número de elementos na malha
+    ne = malha.ne
+
     # Loop pelos elementos da malha, calculando as 
     # tensões ...
-    σ_eq = zeros(4*malha.ne) #Float64[]
+    σ_eq = zeros(4*ne) #Float64[]
 
     # Loops por elemento/nó/pto
     cont = 1
-    for ele=1:malha.ne
+    for ele=1:ne
        for no=1:2
            for pto=0:1
-               σ,X,σe =  Tensao_elemento_no_ponto(ele,no,pto,malha,U)    
+               σe,_ =  Tensao_elemento_no_ponto(ele,no,pto,malha,U)    
                σ_eq[cont] = σe
                cont += 1
             end
@@ -33,19 +36,21 @@ function Tensao_elemento_no_ponto(ele,no,pto,malha,U; verbose=false)
 
     # Testes de consistência
     no in [1;2]    || error("Tensao_elemento_no_ponto::nó deve ser 1 ou 2") 
-    pto in [0;1] || error("Tensao_elemento_no_ponto::pto deve ser 0 ou 1")
+    pto in [0;1]   || error("Tensao_elemento_no_ponto::pto deve ser 0 ou 1")
 
     # Obtem o vetor de forças nos nós do elemento 
-    Fe = Forcas_elemento(ele,malha,U)
+    geo,Fe = Forcas_elemento(ele,malha,U)
+
+
     if verbose
         println("Debug no ELEMENTO $ele, NÓ $no, PONTO $pto")
         println("Vetor Fe (Forcas_elemento): $Fe") 
     end
 
     # Recupera as Proprieades do elemento 
-    Ize, Iye, J0e, Ae, αe, Ee, Ge = LFrame.Dados_fundamentais(ele, malha.dados_elementos, 
-                                                                malha.dicionario_materiais, 
-                                                                malha.dicionario_geometrias)
+    Ize, Iye, J0e, Ae, αe, Ee, Ge, geo = LFrame.Dados_fundamentais(ele, malha.dados_elementos, 
+                                                                   malha.dicionario_materiais, 
+                                                                   malha.dicionario_geometrias)
     
     if verbose 
         println("Ize do LFrame: $Ize")
@@ -59,9 +64,6 @@ function Tensao_elemento_no_ponto(ele,no,pto,malha,U; verbose=false)
     if verbose
        println("re calculado: $re")
     end
-
-    # Declara o vetor de esforços internos
-    Esforcos_internos = []
 
     # Dependendo do nó, temos os esforços internos
     if no==1
@@ -81,7 +83,7 @@ function Tensao_elemento_no_ponto(ele,no,pto,malha,U; verbose=false)
     end
 
     # Monta o vetor de esforços internos 
-    Esforcos_internos = [N, T, My, Mz]
+    Esforcos_internos = [N; T; My; Mz]
 
     # O momento resultante é 
     Mr = sqrt(My^2 + Mz^2)
@@ -110,11 +112,11 @@ function Tensao_elemento_no_ponto(ele,no,pto,malha,U; verbose=false)
 
     # Podemos calcular a tensão equivalente de von-Mises neste
     # ponto
-    σ = sqrt( (σ_N+σ_M)^2 + 3*τ^2 )
+    σe = sqrt( (σ_N+σ_M)^2 + 3*τ^2 )
 
     # Retorna o vetor com as tensões do ponto e 
     # também a tensão equivalente e os esforços internos
-    return Esforcos_internos, [σ_N;τ;σ_M], σ
+    return σe, Esforcos_internos, [σ_N;τ;σ_M]
 
 end
 
