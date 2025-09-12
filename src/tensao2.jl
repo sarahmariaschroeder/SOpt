@@ -12,7 +12,7 @@ function tensao_equivalente(U, malha)
     for ele=1:ne
        for no=1:2
            for pto=0:1
-               σe =  Tensao_elemento_no_ponto(ele,no,pto,malha,U)    
+               σe =  Tensao_eq_elemento_no_ponto(ele,no,pto,malha,U)    
                σ_eq[cont] = σe
                cont += 1
             end
@@ -25,7 +25,7 @@ end
 
 
 
-function Tensao_elemento_no_ponto(ele,no,pto,malha,U; verbose=false)
+function Tensao_eq_elemento_no_ponto(ele,no,pto,malha,U; verbose=false)
 
     # Testes de consistência
     no in [1;2]    || error("Tensao_elemento_no_ponto::nó deve ser 1 ou 2") 
@@ -109,3 +109,115 @@ function Tensao_elemento_no_ponto(ele,no,pto,malha,U; verbose=false)
 end
 
 
+
+
+#
+#
+#
+#
+#
+
+function PIRATA_Forcas_elemento(ele,malha::Malha,U::Vector{Float64})
+    
+    # Recupera dados da estrutura malha
+    conect = malha.conect
+    coord = malha.coord
+    dados_elementos = malha.dados_elementos
+    dicionario_materiais = malha.dicionario_materiais
+    dicionario_geometrias = malha.dicionario_geometrias
+
+    # Recupera os dados do elemento
+    Ize, Iye, J0e, Ae, αe, Ee, Ge, _ = Dados_fundamentais(ele, dados_elementos, dicionario_materiais, 
+                                                           dicionario_geometrias)
+    
+    
+    # Descobre os dados do Elemento
+    Le = malha.L[ele]
+                                                                                                                    
+    # Monta a matriz do elemento no sistema local
+    Ke = Ke_portico3d(Ee, Ize, Iye, Ge, J0e, Le, Ae)
+
+    # Monta a matriz de rotação do elemento
+    Re = Rotacao3d(ele, conect, coord, αe)
+
+    # Descobre os gls globais do elemento 
+    gls = Gls(ele,conect)   
+ 
+    # Recupera os deslocamentos do elemento (ainda no sistema global)
+    ug = U[gls]
+
+    # Rotaciona para o sistema local
+    ul = Re*ug
+
+    # Multiplica pela rigidez (também no sistema local)
+    fe = Ke*ul 
+
+    # Devolve as forças generalizadas nos nós deste elemento
+    # a rigidez, a matriz de rotação e também os gls
+    return fe, Ke, Re, gls
+
+end
+
+
+function Derivada_norma(U, malha)
+
+    # Número de elementos na malha
+    ne = malha.ne
+
+    # Monta a matriz V
+    V = 
+
+    # Loops por elemento/nó/pto
+    cont = 1
+    for ele=1:ne
+
+       # F, K, R, e gls
+       F0e,Ke,Re,glse = PIRATA_Forcas_elemento(ele,malha,U)
+
+       # Parametrização para o elemento 
+       fe  = ρ[ele]
+       dfe = 1.0
+
+       for no=1:2
+
+           # Aqui monta a M
+
+           for pto=0:1
+
+               # Monta a P 
+
+               # Aqui podemos calcular o σi^0
+               #σi0 = ....
+
+               # a tensão sigma i será f_ele * σi0
+               σi = fe*σi0
+
+               # Calcula a tensão equivalente σeq0
+               #σeq0 = ...
+
+               # podemos calcular a tensão equivalente 0 
+               contrib1 = fe*dfe*σeqi0^2
+
+               # Não esquecer de multiplicar pelas σeq...
+               ∂D[ele] += contrib1
+
+               # Contrib para o adjunto (cacaradas na frente...)
+               flocal =  fe*σi*V*P*D*Mn*Ke*Re
+
+               # Contribuição para o vetor de carregamento global 
+               Fλ[glse] .+= vec(flocal) 
+
+            end
+        end  
+    end
+
+    # Usando o linsolve do LFrame 
+    # linsolve.b ....Fλ
+    # obtem o λ
+    # Monta as derivadas...
+ 
+
+    # Podemos retornar os vetores 
+    return Derivada
+
+end

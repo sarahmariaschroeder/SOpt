@@ -11,6 +11,7 @@ module SOpt
     using DelimitedFiles
     using LASS
     using Plots
+    using Enzyme
 
 
     # Carrega os modulos
