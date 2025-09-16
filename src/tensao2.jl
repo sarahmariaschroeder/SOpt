@@ -154,7 +154,7 @@ function PIRATA_Forcas_elemento(ele,malha::Malha,U::Vector{Float64})
 
     # Devolve as forças generalizadas nos nós deste elemento
     # a rigidez, a matriz de rotação e também os gls
-    return fe, Ke, Re, gls
+    return fe, Ke, Re, gls, Ize, J0e, Ae
 
 end
 
@@ -165,14 +165,14 @@ function Derivada_norma(U, malha)
     ne = malha.ne
 
     # Monta a matriz V
-    V = 
+    V = Matriz_VM()
 
     # Loops por elemento/nó/pto
     cont = 1
     for ele=1:ne
 
        # F, K, R, e gls
-       F0e,Ke,Re,glse = PIRATA_Forcas_elemento(ele,malha,U)
+       F0e, Ke, Re, glse, Ize, J0e, Ae = PIRATA_Forcas_elemento(ele,malha,U)
 
        # Parametrização para o elemento 
        fe  = ρ[ele]
@@ -180,23 +180,25 @@ function Derivada_norma(U, malha)
 
        for no=1:2
 
-           # Aqui monta a M
+           # Aqui monta a M - usa a funçao auxiliar
+           M = Matriz_Mn(no)
 
            for pto=0:1
 
-               # Monta a P 
+               # Monta a P - usa a funçao auxiliar
+               P = Matriz_Pna(a, Ae, Re, Ize, J0e)
 
                # Aqui podemos calcular o σi^0
-               #σi0 = ....
+               σi0 = Tensao_elemento_no_ponto(ele,no,pto,malha,U)
 
                # a tensão sigma i será f_ele * σi0
                σi = fe*σi0
 
                # Calcula a tensão equivalente σeq0
-               #σeq0 = ...
+               σeq0 = tensao_equivalente(U, malha)
 
                # podemos calcular a tensão equivalente 0 
-               contrib1 = fe*dfe*σeqi0^2
+               contrib1 = fe*dfe*σeq0^2
 
                # Não esquecer de multiplicar pelas σeq...
                ∂D[ele] += contrib1

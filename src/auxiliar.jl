@@ -9,7 +9,7 @@ function Matriz_VM()
 end
 
 # Função que monta a matriz Pna (Matriz utilizada na derivada do vetor de tensões no elemento)
-function Matriz_Pna()
+function Matriz_Pna(a, Ae, re, Ize, J0e)
     Pna =     [1/Ae    0            0;        # N
                0    re/J0e         0;        # T
                0     0    ((-1)^a)*(re/Ize)] # M
